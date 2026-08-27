@@ -21,3 +21,11 @@ ytd-browse[page-subtype="explore"] #contents,
 ytd-browse ytd-two-column-browse-results-renderer[page-subtype="home"] {
   display: none !important;
 }
+
+.focus-yt-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  width: 100%;
+}
