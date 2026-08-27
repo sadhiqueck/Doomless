@@ -9,3 +9,10 @@ ytd-rich-section-renderer,
 ytd-reel-shelf-renderer {
   display: none !important;
 }
+
+#secondary ytd-watch-next-secondary-results-renderer,
+ytd-browse[page-subtype="trending"] #contents,
+ytd-browse[page-subtype="explore"] #contents,
+.ytp-endscreen-content {
+  display: none !important;
+}
