@@ -16,3 +16,8 @@ ytd-browse[page-subtype="explore"] #contents,
 .ytp-endscreen-content {
   display: none !important;
 }
+
+/* Logged out support */
+ytd-browse ytd-two-column-browse-results-renderer[page-subtype="home"] {
+  display: none !important;
+}
