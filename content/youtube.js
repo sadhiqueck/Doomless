@@ -16,3 +16,13 @@ const observer = new MutationObserver(() => {
   }
 });
 observer.observe(document.documentElement, { subtree: true, childList: true });
+
+function injectPlaceholder() {
+  const container = document.querySelector('ytd-browse[page-subtype="home"]');
+  if (container && !document.querySelector('.focus-yt-placeholder')) {
+    const ph = document.createElement('div');
+    ph.className = 'focus-yt-placeholder';
+    container.prepend(ph);
+  }
+}
+window.addEventListener('load', injectPlaceholder);
