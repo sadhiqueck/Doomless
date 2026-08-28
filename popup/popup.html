@@ -15,9 +15,21 @@
         <span class="slider"></span>
       </label>
     </header>
-    <main class="content">
-      <div id="statusMessage">Active on supported sites</div>
-    </main>
+    <div class="site-list">
+      <div class="site-row">
+        <span>YouTube</span>
+        <label class="switch sm"><input type="checkbox" id="siteYT" checked><span class="slider"></span></label>
+      </div>
+      <div class="site-row">
+        <span>Instagram</span>
+        <label class="switch sm"><input type="checkbox" id="siteIG" checked><span class="slider"></span></label>
+      </div>
+      <div class="site-row">
+        <span>TikTok</span>
+        <label class="switch sm"><input type="checkbox" id="siteTT" checked><span class="slider"></span></label>
+      </div>
+    </div>
+    <div id="statusMessage">Active on selected sites</div>
   </div>
   <script src="popup.js"></script>
 </body>
