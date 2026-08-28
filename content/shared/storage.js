@@ -28,3 +28,8 @@ const FocusStorage = (() => {
 
   return { get, set };
 })();
+
+FocusStorage.isSiteEnabled = async function(siteName) {
+  const data = await FocusStorage.get();
+  return data.enabled && (data.sites && data.sites[siteName] !== false);
+};
