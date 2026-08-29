@@ -10,3 +10,8 @@ A Chrome extension that hides social media feeds on YouTube, Instagram, and TikT
 - [ ] TikTok feed hiding
 - [ ] Sticky-note card UI
 - [ ] Task management
+
+### Week 1 Completed
+- YouTube primary feed, Shorts shelf, recommendations successfully hidden.
+- Extension popup allows master switch and site toggles.
+- Zero-flash early CSS injection running in Manifest V3.
