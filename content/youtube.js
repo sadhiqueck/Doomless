@@ -26,3 +26,6 @@ function injectPlaceholder() {
   }
 }
 window.addEventListener('load', injectPlaceholder);
+
+// Reinforce with HideFeed utility
+HideFeed.hide(YT_FEED_SELECTORS, 'focus-yt-rules');
