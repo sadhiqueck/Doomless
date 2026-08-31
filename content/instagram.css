@@ -1,0 +1,5 @@
+/* Instagram Feed Hider */
+main[role="main"] article,
+[data-testid="virtual-list-scroll-crumb"] {
+  display: none !important;
+}
