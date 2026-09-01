@@ -23,3 +23,7 @@ function pauseFeedVideos() {
   });
 }
 window.addEventListener('load', pauseFeedVideos);
+
+if (location.pathname === '/accounts/login/') {
+  console.log('[Focus Extension] Login screen detected, skipping block.');
+}
