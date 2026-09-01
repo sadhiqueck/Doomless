@@ -9,3 +9,9 @@ main[role="main"] ._ac7v,
 main[role="main"] [style*="padding-bottom: 100%"] {
   display: none !important;
 }
+
+/* Explore grid */
+main[role="main"] ._aagv,
+main[role="main"] ._aabd {
+  display: none !important;
+}
