@@ -13,3 +13,13 @@ const igObserver = new MutationObserver(() => {
   }
 });
 igObserver.observe(document.body, { childList: true, subtree: true });
+
+function pauseFeedVideos() {
+  document.querySelectorAll('video').forEach(v => {
+    // Keep Stories dialog active
+    if (!v.closest('[role="dialog"]') && !v.closest('[role="presentation"]')) {
+      try { v.pause(); } catch(e) {}
+    }
+  });
+}
+window.addEventListener('load', pauseFeedVideos);
