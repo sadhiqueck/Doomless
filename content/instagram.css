@@ -15,3 +15,9 @@ main[role="main"] ._aagv,
 main[role="main"] ._aabd {
   display: none !important;
 }
+
+/* Suggested posts & sidebar */
+[data-testid="suggested-posts"],
+._aa4b {
+  display: none !important;
+}
