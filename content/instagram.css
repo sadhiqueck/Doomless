@@ -21,3 +21,11 @@ main[role="main"] ._aabd {
 ._aa4b {
   display: none !important;
 }
+
+.focus-ig-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  background: #000000;
+}
