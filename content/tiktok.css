@@ -3,3 +3,8 @@
 div[class*="DivItemContainerForSearch"] {
   display: none !important;
 }
+
+[data-e2e="follow-item-container"],
+div[class*="DivVideoFeedV2"] {
+  display: none !important;
+}
