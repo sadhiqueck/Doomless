@@ -1,0 +1,5 @@
+/* TikTok Feed Hider */
+[data-e2e="recommend-list-item-container"],
+div[class*="DivItemContainerForSearch"] {
+  display: none !important;
+}
