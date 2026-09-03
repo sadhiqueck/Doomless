@@ -13,3 +13,10 @@ const ttObserver = new MutationObserver(() => {
   }
 });
 ttObserver.observe(document.body, { childList: true, subtree: true });
+
+function pauseTtVideos() {
+  document.querySelectorAll('video').forEach(v => {
+    try { v.pause(); } catch(e) {}
+  });
+}
+document.addEventListener('DOMContentLoaded', pauseTtVideos);
