@@ -8,3 +8,8 @@ div[class*="DivItemContainerForSearch"] {
 div[class*="DivVideoFeedV2"] {
   display: none !important;
 }
+
+[data-e2e="live-container"],
+[data-e2e="live-tab-active"] {
+  display: none !important;
+}
