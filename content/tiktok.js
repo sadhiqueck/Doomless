@@ -4,3 +4,12 @@
   if (!isEnabled) return;
   console.log('[Focus Extension] Initializing TikTok blocker...');
 })();
+
+let lastTtPath = location.pathname;
+const ttObserver = new MutationObserver(() => {
+  if (location.pathname !== lastTtPath) {
+    lastTtPath = location.pathname;
+    pauseTtVideos();
+  }
+});
+ttObserver.observe(document.body, { childList: true, subtree: true });
