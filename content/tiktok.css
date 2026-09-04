@@ -13,3 +13,8 @@ div[class*="DivVideoFeedV2"] {
 [data-e2e="live-tab-active"] {
   display: none !important;
 }
+
+/* Strict cascade enforcement */
+div[class*="DivFeedContainer"] {
+  display: none !important;
+}
