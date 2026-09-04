@@ -18,3 +18,17 @@ const HideFeed = (() => {
 
   return { injectStyles, hide };
 })();
+
+HideFeed.onElementReady = function(selector, callback, timeoutMs = 8000) {
+  const el = document.querySelector(selector);
+  if (el) { callback(el); return; }
+  const obs = new MutationObserver(() => {
+    const target = document.querySelector(selector);
+    if (target) {
+      obs.disconnect();
+      callback(target);
+    }
+  });
+  obs.observe(document.documentElement, { childList: true, subtree: true });
+  setTimeout(() => obs.disconnect(), timeoutMs);
+};
