@@ -1,0 +1,40 @@
+/* Focus Extension — Sticky Note Card Styles */
+:root {
+  --fe-yellow: #FFF176;
+  --fe-yellow-shadow: #EFEB62;
+  --fe-yellow-deep: #E9E44E;
+  --fe-accent: #a89f00;
+  --fe-text: #3a3300;
+  --fe-muted: #6b6000;
+}
+
+.focus-swap-root {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.fe-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  pointer-events: all;
+}
+
+.fe-sticky-note {
+  position: relative;
+  width: 350px;
+  min-height: 320px;
+  background: var(--fe-yellow);
+  padding: 28px 24px 20px;
+  border-radius: 2px 2px 4px 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', cursive, sans-serif;
+  color: var(--fe-text);
+  pointer-events: all;
+  user-select: none;
+}
