@@ -34,3 +34,11 @@ const FocusCard = (() => {
 
   return { mount, unmount };
 })();
+
+// Wire injection into site container
+FocusCard.attachToContainer = function(containerSelector) {
+  const container = document.querySelector(containerSelector);
+  if (container) {
+    container.style.position = 'relative';
+  }
+};
