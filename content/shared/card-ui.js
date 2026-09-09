@@ -78,3 +78,15 @@ function updateProgress(tasks) {
     showDoneCelebration();
   }
 }
+
+function showDoneCelebration() {
+  const body = document.getElementById('feBody');
+  if (!body) return;
+  body.innerHTML = `
+    <div class="fe-done-view">
+      <div class="fe-done-badge">🎉</div>
+      <h3 class="fe-done-title">All tasks completed!</h3>
+      <p class="fe-done-subtitle">No feed to show anyway. Take a breather!</p>
+    </div>
+  `;
+}
