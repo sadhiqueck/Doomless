@@ -63,3 +63,18 @@ function renderTaskList(tasks) {
   `;
   body.innerHTML = html;
 }
+
+function updateProgress(tasks) {
+  const total = tasks.length;
+  const completed = tasks.filter(t => t.done).length;
+  const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+  const bar = document.getElementById('feProgressBar');
+  const txt = document.getElementById('feProgressText');
+  if (bar) bar.style.width = pct + '%';
+  if (txt) txt.textContent = `${completed} of ${total} done`;
+
+  if (completed === total && total > 0) {
+    showDoneCelebration();
+  }
+}
