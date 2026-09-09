@@ -42,3 +42,24 @@ FocusCard.attachToContainer = function(containerSelector) {
     container.style.position = 'relative';
   }
 };
+
+function renderTaskList(tasks) {
+  const body = document.getElementById('feBody');
+  if (!body) return;
+
+  const html = `
+    <ul class="fe-task-list">
+      ${tasks.map(t => `
+        <li class="fe-task-row ${t.done ? 'is-done' : ''}" data-id="${t.id}">
+          <span class="fe-checkbox ${t.done ? 'checked' : ''}"></span>
+          <span class="fe-task-text">${t.title}</span>
+        </li>
+      `).join('')}
+    </ul>
+    <div class="fe-progress-box">
+      <div class="fe-progress-track"><div class="fe-progress-bar" id="feProgressBar"></div></div>
+      <span class="fe-progress-text" id="feProgressText">0 of 0 done</span>
+    </div>
+  `;
+  body.innerHTML = html;
+}
