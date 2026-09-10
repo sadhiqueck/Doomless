@@ -120,3 +120,30 @@
 }
 .fe-task-text { font-size: 14px; line-height: 1.35; color: var(--fe-text); }
 .fe-task-row.is-done .fe-task-text { text-decoration: line-through; opacity: 0.45; }
+
+.fe-actions { display: flex; gap: 8px; margin-top: 14px; padding-top: 10px; border-top: 1px dashed rgba(0,0,0,0.18); }
+.fe-btn-dismiss {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.1);
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--fe-text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.fe-btn-dismiss:hover { background: rgba(0,0,0,0.18); }
+.fe-btn-through {
+  padding: 8px 10px;
+  background: transparent;
+  border: 1.5px solid rgba(0,0,0,0.25);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--fe-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.fe-btn-through:hover { border-color: rgba(0,0,0,0.45); }
+.fe-cooldown-active { text-align: center; padding: 30px 10px; font-size: 14px; font-weight: 600; color: var(--fe-muted); }
