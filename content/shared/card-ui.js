@@ -105,3 +105,16 @@ function attachCardActions() {
 
   document.getElementById('feBtnDismiss').addEventListener('click', FocusCard.unmount);
 }
+
+function handleLetMeThrough() {
+  const btn = document.getElementById('feBtnThrough');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    await FocusStorage.setCooldown(5);
+    const note = document.getElementById('feNote');
+    if (note) {
+      note.innerHTML = '<div class="fe-cooldown-active">Feed unlocked for 5 minutes. Back soon! 👀</div>';
+    }
+    setTimeout(FocusCard.unmount, 1200);
+  });
+}
