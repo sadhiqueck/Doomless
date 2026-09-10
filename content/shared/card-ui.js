@@ -118,3 +118,11 @@ function handleLetMeThrough() {
     setTimeout(FocusCard.unmount, 1200);
   });
 }
+
+chrome.storage.onChanged.addListener((changes) => {
+  if (changes.cooldownUntil) {
+    if (Date.now() < changes.cooldownUntil.newValue) {
+      FocusCard.unmount();
+    }
+  }
+});
