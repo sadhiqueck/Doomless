@@ -90,3 +90,18 @@ function showDoneCelebration() {
     </div>
   `;
 }
+
+function attachCardActions() {
+  const note = document.getElementById('feNote');
+  if (!note || note.querySelector('.fe-actions')) return;
+
+  const actions = document.createElement('div');
+  actions.className = 'fe-actions';
+  actions.innerHTML = `
+    <button class="fe-btn-dismiss" id="feBtnDismiss">✓ Got it, back to work</button>
+    <button class="fe-btn-through" id="feBtnThrough">Let me through →</button>
+  `;
+  note.appendChild(actions);
+
+  document.getElementById('feBtnDismiss').addEventListener('click', FocusCard.unmount);
+}
