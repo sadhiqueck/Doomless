@@ -33,3 +33,13 @@ FocusStorage.isSiteEnabled = async function(siteName) {
   const data = await FocusStorage.get();
   return data.enabled && (data.sites && data.sites[siteName] !== false);
 };
+
+FocusStorage.setCooldown = async function(minutes = 5) {
+  const expiresAt = Date.now() + (minutes * 60 * 1000);
+  await FocusStorage.set({ cooldownUntil: expiresAt });
+};
+
+FocusStorage.isCooldownActive = async function() {
+  const data = await FocusStorage.get();
+  return Boolean(data.cooldownUntil && Date.now() < data.cooldownUntil);
+};
