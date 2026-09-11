@@ -165,3 +165,8 @@
   --fe-yellow: #FFE0B2; --fe-yellow-shadow: #FFD09A; --fe-yellow-deep: #FFBE82;
   --fe-accent: #e65100; --fe-text: #3e1700; --fe-muted: #bf360c;
 }
+
+@media (prefers-color-scheme: dark) {
+  .fe-backdrop { background: rgba(0, 0, 0, 0.78); }
+  .fe-sticky-note { filter: brightness(0.97); }
+}
