@@ -170,3 +170,5 @@
   .fe-backdrop { background: rgba(0, 0, 0, 0.78); }
   .fe-sticky-note { filter: brightness(0.97); }
 }
+
+.focus-swap-root { isolation: isolate; }
