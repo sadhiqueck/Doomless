@@ -24,3 +24,7 @@ document.addEventListener('DOMContentLoaded', pauseTtVideos);
 if (location.pathname.startsWith('/login')) {
   console.log('[Focus Extension] TikTok login view active.');
 }
+
+window.addEventListener('load', () => {
+  FocusCard.mount('tiktok');
+});
