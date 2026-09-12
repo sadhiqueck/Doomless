@@ -43,3 +43,16 @@ FocusStorage.isCooldownActive = async function() {
   const data = await FocusStorage.get();
   return Boolean(data.cooldownUntil && Date.now() < data.cooldownUntil);
 };
+
+FocusStorage.seedDefaultTasks = async function() {
+  const data = await FocusStorage.get();
+  if (!data.tasks || data.tasks.length === 0) {
+    await FocusStorage.set({
+      tasks: [
+        { id: 'seed-1', title: 'Write 3 key points for today's goal', starred: true, type: 'task' },
+        { id: 'seed-2', title: 'Review open pull request / ticket', starred: false, type: 'task' },
+        { id: 'seed-3', title: 'Take 5 deep breaths before scrolling', starred: false, type: 'note' }
+      ]
+    });
+  }
+};
