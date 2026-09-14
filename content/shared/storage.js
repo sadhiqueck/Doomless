@@ -82,3 +82,14 @@ FocusStorage.updateTask = async function(taskId, changes) {
   const tasks = (data.tasks || []).map(t => t.id === taskId ? { ...t, ...changes } : t);
   await FocusStorage.set({ tasks });
 };
+
+FocusStorage.checkDailyRollover = async function() {
+  const data = await FocusStorage.get();
+  const today = new Date().toISOString().slice(0, 10);
+  if (data.lastResetDate !== today) {
+    await FocusStorage.set({
+      tasksCompleted: [],
+      lastResetDate: today
+    });
+  }
+};
