@@ -56,3 +56,29 @@ FocusStorage.seedDefaultTasks = async function() {
     });
   }
 };
+
+FocusStorage.addTask = async function(title, opts = {}) {
+  const data = await FocusStorage.get();
+  const tasks = data.tasks || [];
+  const newTask = {
+    id: 'task_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    title: title.trim(),
+    starred: Boolean(opts.starred),
+    type: opts.type || 'task'
+  };
+  await FocusStorage.set({ tasks: [...tasks, newTask] });
+  return newTask;
+};
+
+FocusStorage.removeTask = async function(taskId) {
+  const data = await FocusStorage.get();
+  const tasks = (data.tasks || []).filter(t => t.id !== taskId);
+  const tasksCompleted = (data.tasksCompleted || []).filter(id => id !== taskId);
+  await FocusStorage.set({ tasks, tasksCompleted });
+};
+
+FocusStorage.updateTask = async function(taskId, changes) {
+  const data = await FocusStorage.get();
+  const tasks = (data.tasks || []).map(t => t.id === taskId ? { ...t, ...changes } : t);
+  await FocusStorage.set({ tasks });
+};
