@@ -29,3 +29,11 @@ function shuffle(array) {
   }
   return arr;
 }
+
+CardDeck.getOrdered = function() {
+  const allTasks = CardDeck.all();
+  const starred = allTasks.filter(t => t.starred && !t.done);
+  const regular = allTasks.filter(t => !t.starred && !t.done);
+  const done = allTasks.filter(t => t.done);
+  return [...starred, ...shuffle(regular), ...done];
+};
