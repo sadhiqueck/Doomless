@@ -37,3 +37,7 @@ CardDeck.getOrdered = function() {
   const done = allTasks.filter(t => t.done);
   return [...starred, ...shuffle(regular), ...done];
 };
+
+CardDeck.renderEmptyNotice = function() {
+  return '<div class="fe-empty-deck"><p>No tasks remaining! Add more from Settings.</p></div>';
+};
