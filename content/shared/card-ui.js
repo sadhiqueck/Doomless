@@ -163,3 +163,13 @@ window.addEventListener('keydown', (e) => {
     FocusCard.unmount();
   }
 });
+
+function addCardPagination() {
+  const header = document.querySelector('.fe-header');
+  if (!header || header.querySelector('.fe-nav')) return;
+
+  const nav = document.createElement('div');
+  nav.className = 'fe-nav';
+  nav.innerHTML = '<button class="fe-nav-btn prev">◀</button><button class="fe-nav-btn next">▶</button>';
+  header.appendChild(nav);
+}
