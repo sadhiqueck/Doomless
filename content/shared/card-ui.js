@@ -173,3 +173,13 @@ function addCardPagination() {
   nav.innerHTML = '<button class="fe-nav-btn prev">◀</button><button class="fe-nav-btn next">▶</button>';
   header.appendChild(nav);
 }
+
+// Check cooldown expiry on window focus
+window.addEventListener('focus', async () => {
+  const active = await FocusStorage.isCooldownActive();
+  if (!active && !document.querySelector('.focus-swap-root')) {
+    // re-evaluate mount if user returned to tab
+    const site = location.hostname.includes('youtube') ? 'youtube' : location.hostname.includes('instagram') ? 'instagram' : 'tiktok';
+    FocusCard.mount(site);
+  }
+});
