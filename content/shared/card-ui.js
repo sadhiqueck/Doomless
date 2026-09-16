@@ -157,3 +157,9 @@ function enableSwipeGesture(stickyEl) {
     }
   });
 }
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    FocusCard.unmount();
+  }
+});
