@@ -126,3 +126,34 @@ chrome.storage.onChanged.addListener((changes) => {
     }
   }
 });
+
+function enableSwipeGesture(stickyEl) {
+  let startX = 0;
+  let isDragging = false;
+
+  stickyEl.addEventListener('mousedown', (e) => {
+    startX = e.clientX;
+    isDragging = true;
+    stickyEl.style.transition = 'none';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - startX;
+    stickyEl.style.transform = `translateX(${deltaX}px) rotate(${-1.5 + (deltaX * 0.04)}deg)`;
+  });
+
+  window.addEventListener('mouseup', (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    stickyEl.style.transition = 'transform 0.25s ease';
+    const deltaX = e.clientX - startX;
+
+    if (Math.abs(deltaX) > 120) {
+      stickyEl.style.transform = `translateX(${deltaX > 0 ? 600 : -600}px) opacity(0)`;
+      setTimeout(FocusCard.unmount, 200);
+    } else {
+      stickyEl.style.transform = 'rotate(-1.5deg)';
+    }
+  });
+}
