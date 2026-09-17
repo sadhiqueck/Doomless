@@ -180,3 +180,17 @@
 .fe-sticky-note {
   font-family: 'Patrick Hand', 'Caveat', 'Segoe Print', cursive, sans-serif;
 }
+
+/* Horizontal lined notebook texture */
+.fe-sticky-note::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 27px,
+    rgba(0, 0, 0, 0.04) 28px
+  );
+  border-radius: 4px;
+  pointer-events: none;
+}
