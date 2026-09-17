@@ -176,3 +176,7 @@
 .fe-sticky-note.snapping {
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
+.fe-sticky-note {
+  font-family: 'Patrick Hand', 'Caveat', 'Segoe Print', cursive, sans-serif;
+}
