@@ -93,3 +93,9 @@ FocusStorage.checkDailyRollover = async function() {
     });
   }
 };
+
+// Intensity mode: 'soft' gives option to bypass; 'hard' blocks bypass
+FocusStorage.getIntensity = async function() {
+  const data = await FocusStorage.get();
+  return data.intensity || 'soft';
+};
