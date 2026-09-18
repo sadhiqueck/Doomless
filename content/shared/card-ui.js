@@ -183,3 +183,11 @@ window.addEventListener('focus', async () => {
     FocusCard.mount(site);
   }
 });
+
+async function applyIntensityMode() {
+  const intensity = await FocusStorage.getIntensity();
+  if (intensity === 'hard') {
+    const throughBtn = document.getElementById('feBtnThrough');
+    if (throughBtn) throughBtn.style.display = 'none';
+  }
+}
