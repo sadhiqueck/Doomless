@@ -99,3 +99,8 @@ FocusStorage.getIntensity = async function() {
   const data = await FocusStorage.get();
   return data.intensity || 'soft';
 };
+
+FocusStorage.getSchedule = async function() {
+  const data = await FocusStorage.get();
+  return data.schedule || { enabled: false, startHour: 9, endHour: 22 };
+};
