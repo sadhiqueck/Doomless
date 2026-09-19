@@ -104,3 +104,10 @@ FocusStorage.getSchedule = async function() {
   const data = await FocusStorage.get();
   return data.schedule || { enabled: false, startHour: 9, endHour: 22 };
 };
+
+FocusStorage.isScheduleActive = async function() {
+  const sched = await FocusStorage.getSchedule();
+  if (!sched.enabled) return true;
+  const currentHour = new Date().getHours();
+  return currentHour >= sched.startHour && currentHour < sched.endHour;
+};
