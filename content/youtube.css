@@ -1,24 +1,39 @@
-/* YouTube Feed Hider */
-ytd-browse[page-subtype="home"] ytd-rich-grid-renderer,
-ytd-browse[page-subtype="home"] #contents {
+/* YouTube Granular Feed, Shorts, and Sidebar Hider */
+
+/* 1. Primary Homepage Feed (Scattered/Targeted to prevent breaking browse component) */
+html.focus-block-yt-feed ytd-browse[page-subtype="home"] ytd-rich-grid-renderer {
   display: none !important;
 }
 
-/* Shorts and Sidebar */
-ytd-rich-section-renderer,
-ytd-reel-shelf-renderer {
+/* 2. YouTube Shorts Shelves, Navigation Links, Video Player & Overlays */
+html.focus-block-yt-shorts a[href^="/shorts"],
+html.focus-block-yt-shorts a[href*="/shorts/"],
+html.focus-block-yt-shorts ytd-guide-entry-renderer:has(a[href^="/shorts"]),
+html.focus-block-yt-shorts ytd-mini-guide-entry-renderer:has(a[href^="/shorts"]),
+html.focus-block-yt-shorts ytd-guide-entry-renderer a[title="Shorts"],
+html.focus-block-yt-shorts tp-yt-paper-item:has(a[href^="/shorts"]),
+html.focus-block-yt-shorts ytd-rich-shelf-renderer[is-shorts],
+html.focus-block-yt-shorts ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),
+html.focus-block-yt-shorts ytd-reel-shelf-renderer,
+html.focus-block-yt-shorts ytd-reel-video-renderer,
+html.focus-block-yt-shorts ytd-shelf-renderer:has(a[href^="/shorts"]),
+html.focus-block-yt-shorts ytd-video-renderer:has(a[href^="/shorts"]),
+html.focus-block-yt-shorts ytd-grid-video-renderer:has(a[href^="/shorts"]),
+html.focus-block-yt-shorts ytd-notification-renderer:has(a[href*="/shorts"]),
+html.focus-block-yt-shorts ytd-shorts,
+html.focus-block-yt-shorts #shorts-container,
+html.focus-block-yt-shorts #shorts-player,
+html.focus-block-yt-shorts ytd-shorts-inner-player {
   display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
 }
 
-#secondary ytd-watch-next-secondary-results-renderer,
-ytd-browse[page-subtype="trending"] #contents,
-ytd-browse[page-subtype="explore"] #contents,
-.ytp-endscreen-content {
-  display: none !important;
-}
-
-/* Logged out support */
-ytd-browse ytd-two-column-browse-results-renderer[page-subtype="home"] {
+/* 3. Watch Page Recommendations Sidebar */
+html.focus-block-yt-recommendations #secondary ytd-watch-next-secondary-results-renderer,
+html.focus-block-yt-recommendations .ytp-endscreen-content,
+html.focus-block-yt-recommendations ytd-compact-autoplay-renderer {
   display: none !important;
 }
 
