@@ -111,3 +111,12 @@ FocusStorage.isScheduleActive = async function() {
   const currentHour = new Date().getHours();
   return currentHour >= sched.startHour && currentHour < sched.endHour;
 };
+
+// Broadcast storage changes for live content updates
+if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local') {
+      window.dispatchEvent(new CustomEvent('focus-storage-updated', { detail: changes }));
+    }
+  });
+}
