@@ -27,3 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   siteIG.addEventListener('change', save);
   siteTT.addEventListener('change', save);
 });
+
+document.getElementById('btnOpenOptions')?.addEventListener('click', () => {
+  chrome.runtime.openOptionsPage();
+});
