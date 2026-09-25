@@ -73,3 +73,14 @@ function parseMarkdownCheckbox(line) {
   }
   return null;
 }
+
+function parseMarkdownHeaders(line) {
+  const match = line.match(/^#{1,3}\s+(.+)/);
+  if (match) {
+    return {
+      title: match[1].trim(),
+      starred: true
+    };
+  }
+  return null;
+}
