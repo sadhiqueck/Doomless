@@ -62,3 +62,14 @@ document.addEventListener('keydown', (e) => {
     document.getElementById('btnSaveTasks')?.click();
   }
 });
+
+function parseMarkdownCheckbox(line) {
+  const match = line.match(/^-\s*\[([ xX])\]\s*(.+)/);
+  if (match) {
+    return {
+      title: match[2].trim(),
+      done: match[1].toLowerCase() === 'x'
+    };
+  }
+  return null;
+}
