@@ -84,3 +84,12 @@ function parseMarkdownHeaders(line) {
   }
   return null;
 }
+
+function sanitizeAndCap(tasks, limit = 20) {
+  return tasks
+    .slice(0, limit)
+    .map(t => ({
+      ...t,
+      title: t.title.replace(/<[^>]*>?/gm, '').slice(0, 140)
+    }));
+}
