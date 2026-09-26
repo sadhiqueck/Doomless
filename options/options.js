@@ -93,3 +93,21 @@ function sanitizeAndCap(tasks, limit = 20) {
       title: t.title.replace(/<[^>]*>?/gm, '').slice(0, 140)
     }));
 }
+
+document.getElementById('btnFetchUrl')?.addEventListener('click', async () => {
+  const input = document.getElementById('notionUrlInput');
+  const url = input.value.trim();
+  if (!url) return;
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+    const cleanText = text.replace(/<[^>]*>/g, '');
+    const textarea = document.getElementById('taskTextarea');
+    textarea.value = cleanText.split('
+').slice(0, 15).join('
+');
+    renderPreview(parseLines(textarea.value));
+  } catch (err) {
+    alert('Failed to fetch from URL: ' + err.message);
+  }
+});
