@@ -41,3 +41,13 @@ CardDeck.getOrdered = function() {
 CardDeck.renderEmptyNotice = function() {
   return '<div class="fe-empty-deck"><p>No tasks remaining! Add more from Settings.</p></div>';
 };
+
+CardDeck.tagCardType = function(item) {
+  if (item.title.toLowerCase().includes('timer') || item.title.includes('⏱')) {
+    return 'timer';
+  }
+  if (item.title.length > 100 || item.type === 'note') {
+    return 'note';
+  }
+  return 'task';
+};
