@@ -111,3 +111,28 @@ document.getElementById('btnFetchUrl')?.addEventListener('click', async () => {
     alert('Failed to fetch from URL: ' + err.message);
   }
 });
+
+document.getElementById('btnFetchGithub')?.addEventListener('click', async () => {
+  const repoInput = document.getElementById('githubRepoInput').value.trim();
+  const match = repoInput.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+  if (!match) {
+    alert('Please enter a valid format: github.com/owner/repo');
+    return;
+  }
+  const [, owner, repo] = match;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues?state=open&per_page=15`);
+    if (res.status === 403) {
+      alert('GitHub API rate limit reached. Please try again in a few minutes.');
+      return;
+    }
+    const issues = await res.json();
+    const titles = issues.map(i => `#${i.number}: ${i.title}`);
+    const textarea = document.getElementById('taskTextarea');
+    textarea.value = titles.join('
+');
+    renderPreview(parseLines(textarea.value));
+  } catch (err) {
+    alert('Failed to connect to GitHub: ' + err.message);
+  }
+});
