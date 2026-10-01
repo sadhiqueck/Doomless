@@ -3,31 +3,40 @@ document.addEventListener('DOMContentLoaded', async () => {
   const siteYT = document.getElementById('siteYT');
   const siteIG = document.getElementById('siteIG');
   const siteTT = document.getElementById('siteTT');
+  const quickInput = document.getElementById('popupQuickInput');
+  const quickBtn = document.getElementById('btnQuickAdd');
+  const countEl = document.getElementById('popupTaskCount');
+  const streakEl = document.getElementById('streakBadge');
 
-  chrome.storage.local.get({ enabled: true, sites: { youtube: true, instagram: true, tiktok: true } }, (res) => {
-    masterToggle.checked = res.enabled;
-    siteYT.checked = res.sites.youtube;
-    siteIG.checked = res.sites.instagram;
-    siteTT.checked = res.sites.tiktok;
+  async function refresh() {
+    const data = await FocusStorage.get();
+    masterToggle.checked = data.enabled;
+    siteYT.checked = data.sites.youtube;
+    siteIG.checked = data.sites.instagram;
+    siteTT.checked = data.sites.tiktok;
+
+    const tasks = data.tasks || [];
+    const completed = data.tasksCompleted || [];
+    const activeCount = tasks.filter(t => !completed.includes(t.id)).length;
+    countEl.textContent = `${activeCount} active task${activeCount === 1 ? '' : 's'}`;
+    streakEl.textContent = `🔥 ${data.streak || 0} streak`;
+  }
+  await refresh();
+
+  quickBtn.addEventListener('click', async () => {
+    const val = quickInput.value.trim();
+    if (!val) return;
+    await FocusStorage.addTask(val);
+    quickInput.value = '';
+    await refresh();
   });
 
-  function save() {
-    chrome.storage.local.set({
-      enabled: masterToggle.checked,
-      sites: {
-        youtube: siteYT.checked,
-        instagram: siteIG.checked,
-        tiktok: siteTT.checked
-      }
-    });
-  }
+  quickInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') quickBtn.click();
+  });
 
-  masterToggle.addEventListener('change', save);
-  siteYT.addEventListener('change', save);
-  siteIG.addEventListener('change', save);
-  siteTT.addEventListener('change', save);
-});
-
-document.getElementById('btnOpenOptions')?.addEventListener('click', () => {
-  chrome.runtime.openOptionsPage();
+  document.getElementById('linkOptions').addEventListener('click', (e) => {
+    e.preventDefault();
+    chrome.runtime.openOptionsPage();
+  });
 });
