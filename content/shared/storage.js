@@ -127,3 +127,12 @@ FocusStorage.setSiteSchedule = async function(siteName, scheduleObj) {
   siteSchedules[siteName] = scheduleObj;
   await FocusStorage.set({ siteSchedules });
 };
+
+FocusStorage.isHourInRange = function(startHour, endHour) {
+  const currentHour = new Date().getHours();
+  if (startHour <= endHour) {
+    return currentHour >= startHour && currentHour < endHour;
+  }
+  // Overnight schedule support (e.g. 22:00 to 06:00)
+  return currentHour >= startHour || currentHour < endHour;
+};
