@@ -120,3 +120,10 @@ if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged)
     }
   });
 }
+
+FocusStorage.setSiteSchedule = async function(siteName, scheduleObj) {
+  const data = await FocusStorage.get();
+  const siteSchedules = data.siteSchedules || {};
+  siteSchedules[siteName] = scheduleObj;
+  await FocusStorage.set({ siteSchedules });
+};
