@@ -136,3 +136,11 @@ FocusStorage.isHourInRange = function(startHour, endHour) {
   // Overnight schedule support (e.g. 22:00 to 06:00)
   return currentHour >= startHour || currentHour < endHour;
 };
+
+// Standardized schedule format
+FocusStorage.DEFAULT_SCHEDULE = {
+  enabled: false,
+  startHour: 9,
+  endHour: 22,
+  mode: 'all' // 'all', 'workdays', 'weekends'
+};
