@@ -151,3 +151,8 @@ FocusStorage.isDayMatchingMode = function(mode = 'all') {
   if (mode === 'weekends') return day === 0 || day === 6;
   return true;
 };
+
+// Guard Sunday midnight edge-case in streak calculation
+FocusStorage.isSunday = function() {
+  return new Date().getDay() === 0;
+};
