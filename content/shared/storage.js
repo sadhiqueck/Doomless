@@ -144,3 +144,10 @@ FocusStorage.DEFAULT_SCHEDULE = {
   endHour: 22,
   mode: 'all' // 'all', 'workdays', 'weekends'
 };
+
+FocusStorage.isDayMatchingMode = function(mode = 'all') {
+  const day = new Date().getDay(); // 0 is Sunday, 6 is Saturday
+  if (mode === 'workdays') return day >= 1 && day <= 5;
+  if (mode === 'weekends') return day === 0 || day === 6;
+  return true;
+};
