@@ -1,0 +1,34 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #09090b;
+  color: #fafafa;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.onboarding-shell { width: 100%; max-width: 480px; }
+.step-progress { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #27272a; transition: background 0.2s; }
+.dot.active { background: #22c55e; }
+.step-card { display: none; background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 32px 28px; animation: feFadeIn 0.25s ease; }
+.step-card.active { display: block; }
+@keyframes feFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.step-emoji { font-size: 40px; display: block; margin-bottom: 14px; }
+.step-heading { font-size: 22px; font-weight: 700; line-height: 1.3; margin-bottom: 10px; }
+.step-sub { font-size: 13px; color: #a1a1aa; line-height: 1.5; margin-bottom: 22px; }
+.btn-next { width: 100%; background: #22c55e; color: #000; font-weight: 700; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+.btn-back { background: #27272a; color: #d4d4d8; font-weight: 600; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+.btn-group { display: flex; gap: 10px; }
+.btn-group .btn-next { flex: 1; }
+.site-choices { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.site-choice { display: flex; align-items: center; gap: 12px; background: #27272a; padding: 12px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+.site-choice input { accent-color: #22c55e; width: 18px; height: 18px; }
+textarea#obTasks { width: 100%; height: 120px; background: #27272a; border: 1px solid #3f3f46; border-radius: 6px; color: #fff; padding: 12px; font-family: inherit; font-size: 13px; resize: none; margin-bottom: 20px; outline: none; }
+.intensity-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.intensity-card { border: 2px solid #27272a; border-radius: 8px; padding: 14px 16px; cursor: pointer; transition: border-color 0.15s; }
+.intensity-card.selected { border-color: #22c55e; background: #1c1c20; }
+.intensity-card strong { display: block; font-size: 14px; margin-bottom: 4px; }
+.intensity-card span { font-size: 12px; color: #a1a1aa; line-height: 1.4; display: block; }
