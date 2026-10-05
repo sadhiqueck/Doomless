@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Focus Extension</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
+  <link rel="stylesheet" href="onboarding.css">
+</head>
+<body>
+  <div class="onboarding-shell">
+    <div class="step-progress" id="stepProgress">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+
+    <!-- Step 1: Value Prop -->
+    <div class="step-card active" id="step1">
+      <span class="step-emoji">📌</span>
+      <h1 class="step-heading">Block the scroll.<br>Swap in your work.</h1>
+      <p class="step-sub">Most blockers leave you staring at a blank screen. Focus Extension replaces mindless feeds on YouTube, Instagram, and TikTok with a 30-second swipeable unit of what you're working on today.</p>
+      <button class="btn-next" onclick="nextStep(2)">Get Started →</button>
+    </div>
+
+    <!-- Step 2: Site Selection -->
+    <div class="step-card" id="step2">
+      <h2 class="step-heading">Choose platforms to intercept</h2>
+      <p class="step-sub">Select the websites where you find yourself reflexively opening feeds:</p>
+      <div class="site-choices">
+        <label class="site-choice">
+          <input type="checkbox" id="obYT" checked>
+          <span>YouTube Homepage & Shorts</span>
+        </label>
+        <label class="site-choice">
+          <input type="checkbox" id="obIG" checked>
+          <span>Instagram Feed & Reels</span>
+        </label>
+        <label class="site-choice">
+          <input type="checkbox" id="obTT" checked>
+          <span>TikTok For You & Following</span>
+        </label>
+      </div>
+      <div class="btn-group">
+        <button class="btn-back" onclick="nextStep(1)">Back</button>
+        <button class="btn-next" onclick="nextStep(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Initial Task Ingestion -->
+    <div class="step-card" id="step3">
+      <h2 class="step-heading">What are you working on today?</h2>
+      <p class="step-sub">Paste your sprint tickets, chapter goals, or 3 key priorities:</p>
+      <textarea id="obTasks" placeholder="Complete section 4.2 draft&#10;Fix authentication redirect bug&#10;Reply to design review thread"></textarea>
+      <div class="btn-group">
+        <button class="btn-back" onclick="nextStep(2)">Back</button>
+        <button class="btn-next" onclick="nextStep(4)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Intensity & Done -->
+    <div class="step-card" id="step4">
+      <h2 class="step-heading">Choose your intensity</h2>
+      <div class="intensity-options">
+        <label class="intensity-card selected" id="optSoft" onclick="selectIntensity('soft')">
+          <strong>Soft Nudge</strong>
+          <span>Shows your task note first, but offers a 5-minute unlock if you need a breather.</span>
+        </label>
+        <label class="intensity-card" id="optHard" onclick="selectIntensity('hard')">
+          <strong>Hard Block</strong>
+          <span>No bypass buttons. Fully holds the boundary during work hours.</span>
+        </label>
+      </div>
+      <div class="btn-group">
+        <button class="btn-back" onclick="nextStep(3)">Back</button>
+        <button class="btn-next finish" onclick="finishOnboarding()">Start Focusing 🚀</button>
+      </div>
+    </div>
+  </div>
+  <script src="../content/shared/storage.js"></script>
+  <script src="onboarding.js"></script>
+</body>
+</html>
