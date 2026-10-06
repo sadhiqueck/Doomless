@@ -32,3 +32,6 @@ textarea#obTasks { width: 100%; height: 120px; background: #27272a; border: 1px 
 .intensity-card.selected { border-color: #22c55e; background: #1c1c20; }
 .intensity-card strong { display: block; font-size: 14px; margin-bottom: 4px; }
 .intensity-card span { font-size: 12px; color: #a1a1aa; line-height: 1.4; display: block; }
+
+.intensity-card:hover { border-color: #3f3f46; }
+.intensity-card.selected:hover { border-color: #22c55e; }
