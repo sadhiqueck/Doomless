@@ -1,11 +1,14 @@
 // Focus Extension — Service Worker
 chrome.runtime.onInstalled.addListener(({ reason }) => {
   if (reason === 'install') {
-    chrome.storage.local.set({ onboardingDone: false });
+    chrome.storage.local.get({ onboardingDone: false }, (res) => {
+      if (!res.onboardingDone) {
+        chrome.tabs.create({ url: chrome.runtime.getURL('onboarding/onboarding.html') });
+      }
+    });
   }
 });
 
-// Midnight reset alarm
 chrome.alarms.create('daily-reset', {
   when: getNextMidnight(),
   periodInMinutes: 24 * 60
