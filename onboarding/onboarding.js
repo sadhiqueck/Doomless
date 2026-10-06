@@ -38,3 +38,11 @@ async function finishOnboarding() {
 
   window.close();
 }
+
+// Auto-focus on task textarea when step 3 opens
+window.nextStepWithFocus = function(stepNum) {
+  nextStep(stepNum);
+  if (stepNum === 3) {
+    setTimeout(() => document.getElementById('obTasks')?.focus(), 100);
+  }
+};
