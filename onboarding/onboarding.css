@@ -35,3 +35,5 @@ textarea#obTasks { width: 100%; height: 120px; background: #27272a; border: 1px 
 
 .intensity-card:hover { border-color: #3f3f46; }
 .intensity-card.selected:hover { border-color: #22c55e; }
+
+.dot { cursor: pointer; }
