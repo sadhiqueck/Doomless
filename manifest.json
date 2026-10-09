@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Focus Extension",
-  "version": "0.2.0",
+  "version": "0.9.0",
   "description": "Block the scroll. Swap in your work.",
   "permissions": [
     "storage",
@@ -13,24 +13,20 @@
     "https://www.instagram.com/*",
     "https://www.tiktok.com/*"
   ],
-  "content_scripts": [
-    {
-      "matches": ["https://www.youtube.com/*"],
-      "js": ["content/shared/storage.js", "content/shared/hide-feed.js", "content/youtube.js"],
-      "css": ["content/youtube.css"],
-      "run_at": "document_start"
-    },
-    {
-      "matches": ["https://www.instagram.com/*"],
-      "js": ["content/shared/storage.js", "content/shared/hide-feed.js", "content/instagram.js"],
-      "css": ["content/instagram.css"],
-      "run_at": "document_start"
-    },
-    {
-      "matches": ["https://www.tiktok.com/*"],
-      "js": ["content/shared/storage.js", "content/shared/hide-feed.js", "content/tiktok.js"],
-      "css": ["content/tiktok.css"],
-      "run_at": "document_start"
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "toggle-focus": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "Command+Shift+F"
+      },
+      "description": "Toggle focus mode on or off"
     }
-  ]
+  },
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "options_page": "options/options.html"
 }
