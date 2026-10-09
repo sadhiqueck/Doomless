@@ -28,3 +28,10 @@ function getNextMidnight() {
   m.setHours(24, 0, 0, 0);
   return m.getTime();
 }
+
+chrome.commands.onCommand.addListener(async (command) => {
+  if (command === 'toggle-focus') {
+    const data = await new Promise(r => chrome.storage.local.get({ enabled: true }, r));
+    chrome.storage.local.set({ enabled: !data.enabled });
+  }
+});
