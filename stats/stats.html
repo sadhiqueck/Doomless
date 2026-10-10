@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Focus Extension — Productivity Stats</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
+  <link rel="stylesheet" href="stats.css">
+</head>
+<body>
+  <div class="stats-shell">
+    <header class="stats-header">
+      <div>
+        <h1>Focus Performance</h1>
+        <p class="subtitle">Real-time daily intercept & completion metrics</p>
+      </div>
+      <a href="../options/options.html" class="back-link">← Settings</a>
+    </header>
+
+    <div class="metrics-row">
+      <div class="metric-card">
+        <span class="metric-val" id="valStreak">0</span>
+        <span class="metric-label">Day Streak 🔥</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val" id="valTodayDone">0</span>
+        <span class="metric-label">Completed Today</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val" id="valTotalDone">0</span>
+        <span class="metric-label">Total Completed</span>
+      </div>
+    </div>
+
+    <section class="chart-section">
+      <h2>Last 7 Days Activity</h2>
+      <div class="bar-chart" id="barChart"></div>
+    </section>
+
+    <section class="heatmap-section">
+      <h2>28-Day Consistency Heatmap</h2>
+      <div class="heatmap-grid" id="heatmapGrid"></div>
+    </section>
+  </div>
+  <script src="../content/shared/storage.js"></script>
+  <script src="stats.js"></script>
+</body>
+</html>
