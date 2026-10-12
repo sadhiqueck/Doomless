@@ -31,3 +31,9 @@ if (location.pathname === '/accounts/login/') {
 window.addEventListener('load', () => {
   FocusCard.mount('instagram');
 });
+
+// Late-2026 selector updates
+const IG_FALLBACK_SELECTORS = [
+  '[data-testid="feed-loading-skeleton"]',
+  'div[style*="flex-direction: column"] > article'
+];
