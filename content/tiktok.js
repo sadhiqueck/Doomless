@@ -28,3 +28,6 @@ if (location.pathname.startsWith('/login')) {
 window.addEventListener('load', () => {
   FocusCard.mount('tiktok');
 });
+
+// Late-2026 client-side route pattern
+const TT_REPOST_CONTAINER = '[data-e2e="main-content-others-hasrepost"]';
