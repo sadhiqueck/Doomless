@@ -11,3 +11,9 @@ const ContentCoordinator = (() => {
   }
   return { init };
 })();
+
+ContentCoordinator.isSessionValid = function() {
+  if (document.querySelector('[data-is-error="true"]')) return false;
+  if (location.pathname.includes('/auth') || location.pathname.includes('/checkpoint')) return false;
+  return true;
+};
