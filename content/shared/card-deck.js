@@ -51,3 +51,10 @@ CardDeck.tagCardType = function(item) {
   }
   return 'task';
 };
+
+if (typeof window !== 'undefined') {
+  window.CardDeck = CardDeck;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.CardDeck = CardDeck;
+}

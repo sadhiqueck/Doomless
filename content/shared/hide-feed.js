@@ -11,8 +11,7 @@ const HideFeed = (() => {
   }
 
   function hide(selectors, styleId) {
-    const css = selectors.map(s => `${s} { display: none !important; }`).join('
-');
+    const css = selectors.map(s => `${s} { display: none !important; }`).join('\n');
     injectStyles(css, styleId);
   }
 
@@ -32,3 +31,10 @@ HideFeed.onElementReady = function(selector, callback, timeoutMs = 8000) {
   obs.observe(document.documentElement, { childList: true, subtree: true });
   setTimeout(() => obs.disconnect(), timeoutMs);
 };
+
+if (typeof window !== 'undefined') {
+  window.HideFeed = HideFeed;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.HideFeed = HideFeed;
+}

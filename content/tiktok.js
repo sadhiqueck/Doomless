@@ -5,29 +5,33 @@
   async function updateState() {
     if (location.pathname.startsWith('/login')) return;
 
-    const isEnabled = await FocusStorage.isSiteEnabled(SITE);
-    const schedOk = await FocusStorage.isScheduleActive();
-    const isCooldown = await FocusStorage.isCooldownActive();
+    try {
+      const isEnabled = await FocusStorage.isSiteEnabled(SITE);
+      const schedOk = await FocusStorage.isScheduleActive();
+      const isCooldown = await FocusStorage.isCooldownActive();
 
-    const shouldBlock = isEnabled && schedOk && !isCooldown;
+      const shouldBlock = isEnabled && schedOk && !isCooldown;
 
-    const blockFyp = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'fyp'));
-    const blockFollowing = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'following'));
-    const blockLive = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'live'));
+      const blockFyp = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'fyp'));
+      const blockFollowing = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'following'));
+      const blockLive = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'live'));
 
-    document.documentElement.classList.toggle('focus-block-tt-fyp', blockFyp);
-    document.documentElement.classList.toggle('focus-block-tt-following', blockFollowing);
-    document.documentElement.classList.toggle('focus-block-tt-live', blockLive);
+      document.documentElement.classList.toggle('focus-block-tt-fyp', Boolean(blockFyp));
+      document.documentElement.classList.toggle('focus-block-tt-following', Boolean(blockFollowing));
+      document.documentElement.classList.toggle('focus-block-tt-live', Boolean(blockLive));
 
-    const isHome = location.pathname === '/' || location.pathname === '';
-    const isFollowing = location.pathname.startsWith('/following');
-    const isLive = location.pathname.startsWith('/live');
+      const isHome = location.pathname === '/' || location.pathname === '';
+      const isFollowing = location.pathname.startsWith('/following');
+      const isLive = location.pathname.startsWith('/live');
 
-    if (shouldBlock && (isHome && blockFyp || isFollowing && blockFollowing || isLive && blockLive)) {
-      pauseTtVideos();
-      FocusCard.mount(SITE);
-    } else {
-      FocusCard.unmount();
+      if (shouldBlock && (isHome && blockFyp || isFollowing && blockFollowing || isLive && blockLive)) {
+        pauseTtVideos();
+        FocusCard.mount(SITE);
+      } else {
+        FocusCard.unmount();
+      }
+    } catch(err) {
+      console.error('[Doomless] TikTok updateState failed:', err);
     }
   }
 
@@ -57,6 +61,15 @@
   if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area === 'local') {
+        updateState();
+      }
+    });
+  }
+
+  // Listen for direct tab messages from popup
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
+    chrome.runtime.onMessage.addListener((msg) => {
+      if (msg && msg.type === 'DOOMLESS_STATE_CHANGED') {
         updateState();
       }
     });

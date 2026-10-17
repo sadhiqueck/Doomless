@@ -265,3 +265,10 @@ const FocusCard = (() => {
 
   return { mount, unmount };
 })();
+
+if (typeof window !== 'undefined') {
+  window.FocusCard = FocusCard;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.FocusCard = FocusCard;
+}

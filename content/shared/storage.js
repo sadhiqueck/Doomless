@@ -48,19 +48,21 @@ const FocusStorage = (() => {
           tiktok: { ...DEFAULTS.sites.tiktok }
         };
 
-        if (stored.sites) {
-          ['youtube', 'instagram', 'tiktok'].forEach(site => {
+        if (stored && stored.sites) {
+          const siteKeys = ['youtube', 'instagram', 'tiktok'];
+          for (let i = 0; i < siteKeys.length; i++) {
+            const site = siteKeys[i];
             if (typeof stored.sites[site] === 'boolean') {
               mergedSites[site].enabled = stored.sites[site];
             } else if (typeof stored.sites[site] === 'object' && stored.sites[site] !== null) {
               mergedSites[site] = { ...mergedSites[site], ...stored.sites[site] };
             }
-          });
+          }
         }
 
         const result = {
           ...DEFAULTS,
-          ...stored,
+          ...(stored || {}),
           sites: mergedSites
         };
 
@@ -186,3 +188,10 @@ const FocusStorage = (() => {
     DEFAULTS
   };
 })();
+
+if (typeof window !== 'undefined') {
+  window.FocusStorage = FocusStorage;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.FocusStorage = FocusStorage;
+}
