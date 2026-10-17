@@ -38,6 +38,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     ttSubOptions.classList.toggle('is-disabled', !siteTT.checked);
   }
 
+  function notifyActiveTabs() {
+    if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.query) {
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach(t => {
+          if (t.id) {
+            try {
+              chrome.tabs.sendMessage(t.id, { type: 'DOOMLESS_STATE_CHANGED' }, () => {
+                if (chrome.runtime.lastError) {} // Ignore tabs without content script
+              });
+            } catch(e) {}
+          }
+        });
+      });
+    }
+  }
+
   async function refresh() {
     const data = await FocusStorage.get();
     masterToggle.checked = data.enabled !== false;
@@ -84,6 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Save changes on master toggle
   masterToggle.addEventListener('change', async () => {
     await FocusStorage.set({ enabled: masterToggle.checked });
+    notifyActiveTabs();
   });
 
   // Save changes on site and sub-options
@@ -110,6 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     };
     await FocusStorage.set({ sites });
+    notifyActiveTabs();
   }
 
   // Bind site toggles

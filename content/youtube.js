@@ -2,28 +2,20 @@
 (function() {
   const SITE = 'youtube';
 
-  function wakeupYouTube() {
-    // 1. Dispatch standard window events so Polymer/virtual list re-measures viewport
-    window.dispatchEvent(new Event('resize'));
-    window.dispatchEvent(new Event('scroll'));
+  function restoreYouTubeFeed() {
+    // 1. Remove feed block class immediately
+    document.documentElement.classList.remove('focus-block-yt-feed');
 
-    // 2. Query rich grid and trigger iron-resize or recalculate
+    // 2. Ensure rich grid renderer is displayed
     const grid = document.querySelector('ytd-rich-grid-renderer');
     if (grid) {
-      if (typeof grid.fire === 'function') {
-        try { grid.fire('iron-resize'); } catch(e) {}
-      }
-      if (typeof grid.calculateGrid_ === 'function') {
-        try { grid.calculateGrid_(); } catch(e) {}
-      }
-      const contents = grid.querySelector('#contents');
-      if (contents && contents.children.length === 0) {
-        window.dispatchEvent(new CustomEvent('yt-action', {
-          detail: { actionName: 'yt-reload-continuation' },
-          bubbles: true
-        }));
-      }
+      grid.style.removeProperty('display');
+      grid.style.removeProperty('visibility');
     }
+
+    // 3. Dispatch standard window events so YouTube's iron-list virtual scroll recalculates
+    window.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event('scroll'));
   }
 
   function pauseAndMuteShorts() {
@@ -84,7 +76,7 @@
     } else {
       FocusCard.unmount();
       if (!blockFeed) {
-        wakeupYouTube();
+        restoreYouTubeFeed();
       }
     }
   }
@@ -120,9 +112,19 @@
   });
   observer.observe(document.documentElement, { subtree: true, childList: true });
 
+  // Listen for storage changes
   if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area === 'local') {
+        updateState();
+      }
+    });
+  }
+
+  // Listen for direct tab messages from popup
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
+    chrome.runtime.onMessage.addListener((msg) => {
+      if (msg && msg.type === 'DOOMLESS_STATE_CHANGED') {
         updateState();
       }
     });
