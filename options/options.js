@@ -1,10 +1,32 @@
-// Focus Extension — Options Page Controller
+// Focus Extension — Options Page Controller (Cal.com Light Minimalist)
 document.addEventListener('DOMContentLoaded', async () => {
   const textarea = document.getElementById('taskTextarea');
   const preview = document.getElementById('taskPreviewContainer');
+
+  // Platform master switches
   const optYT = document.getElementById('optYT');
   const optIG = document.getElementById('optIG');
   const optTT = document.getElementById('optTT');
+
+  // Sub-grid elements
+  const ytGrid = document.getElementById('ytGrid');
+  const igGrid = document.getElementById('igGrid');
+  const ttGrid = document.getElementById('ttGrid');
+
+  // Granular feature toggles
+  const optYTFeed = document.getElementById('optYTFeed');
+  const optYTShorts = document.getElementById('optYTShorts');
+  const optYTRecs = document.getElementById('optYTRecs');
+
+  const optIGFeed = document.getElementById('optIGFeed');
+  const optIGReels = document.getElementById('optIGReels');
+  const optIGExplore = document.getElementById('optIGExplore');
+
+  const optTTFyp = document.getElementById('optTTFyp');
+  const optTTFollowing = document.getElementById('optTTFollowing');
+  const optTTLive = document.getElementById('optTTLive');
+
+  // Intensity, Schedule & Theme
   const intSoft = document.getElementById('intSoft');
   const intHard = document.getElementById('intHard');
   const optSchedEnable = document.getElementById('optSchedEnable');
@@ -14,32 +36,71 @@ document.addEventListener('DOMContentLoaded', async () => {
   const fileInput = document.getElementById('fileInput');
   const btnFetchGithub = document.getElementById('btnFetchGithub');
   const btnSaveAll = document.getElementById('btnSaveAll');
+  const toast = document.getElementById('toast');
 
-  let selectedTheme = 'yellow';
+  let selectedTheme = 'white';
 
-  // 1. Load initial settings
+  function updateVisualStates() {
+    ytGrid.classList.toggle('is-disabled', !optYT.checked);
+    igGrid.classList.toggle('is-disabled', !optIG.checked);
+    ttGrid.classList.toggle('is-disabled', !optTT.checked);
+  }
+
+  // 1. Load initial settings from chrome.storage
   const data = await FocusStorage.get();
   const tasks = data.tasks || FocusStorage.DEFAULTS.tasks;
   textarea.value = tasks.map(t => t.title).join('\n');
   renderPreview(parseLines(textarea.value));
 
-  optYT.checked = data.sites?.youtube !== false;
-  optIG.checked = data.sites?.instagram !== false;
-  optTT.checked = data.sites?.tiktok !== false;
+  // YouTube settings
+  const yt = typeof data.sites?.youtube === 'object'
+    ? data.sites.youtube
+    : { enabled: data.sites?.youtube !== false, feed: true, shorts: true, recommendations: true };
+  optYT.checked = yt.enabled !== false;
+  optYTFeed.checked = yt.feed !== false;
+  optYTShorts.checked = yt.shorts !== false;
+  optYTRecs.checked = yt.recommendations !== false;
 
+  // Instagram settings
+  const ig = typeof data.sites?.instagram === 'object'
+    ? data.sites.instagram
+    : { enabled: data.sites?.instagram !== false, feed: true, reels: true, explore: true };
+  optIG.checked = ig.enabled !== false;
+  optIGFeed.checked = ig.feed !== false;
+  optIGReels.checked = ig.reels !== false;
+  optIGExplore.checked = ig.explore !== false;
+
+  // TikTok settings
+  const tt = typeof data.sites?.tiktok === 'object'
+    ? data.sites.tiktok
+    : { enabled: data.sites?.tiktok !== false, fyp: true, following: true, live: true };
+  optTT.checked = tt.enabled !== false;
+  optTTFyp.checked = tt.fyp !== false;
+  optTTFollowing.checked = tt.following !== false;
+  optTTLive.checked = tt.live !== false;
+
+  updateVisualStates();
+
+  optYT.addEventListener('change', updateVisualStates);
+  optIG.addEventListener('change', updateVisualStates);
+  optTT.addEventListener('change', updateVisualStates);
+
+  // Intensity
   if (data.intensity === 'hard') {
     intHard.checked = true;
   } else {
     intSoft.checked = true;
   }
 
-  const sched = data.schedule || { enabled: false, startHour: 9, endHour: 22 };
+  // Schedule
+  const sched = data.schedule || { enabled: false, startHour: 9, endHour: 18 };
   optSchedEnable.checked = Boolean(sched.enabled);
   schedDetails.style.display = sched.enabled ? 'block' : 'none';
   schedStart.value = sched.startHour ?? 9;
-  schedEnd.value = sched.endHour ?? 22;
+  schedEnd.value = sched.endHour ?? 18;
 
-  selectedTheme = data.theme || 'yellow';
+  // Theme
+  selectedTheme = data.theme || 'white';
   document.querySelectorAll('.theme-swatch').forEach(swatch => {
     swatch.classList.toggle('active', swatch.dataset.theme === selectedTheme);
     swatch.addEventListener('click', () => {
@@ -65,14 +126,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const text = await file.text();
     textarea.value = text;
     renderPreview(parseLines(textarea.value));
+    showToast('✓ Markdown file loaded');
   });
 
   // GitHub Issues import
   btnFetchGithub?.addEventListener('click', async () => {
     const repoInput = document.getElementById('githubRepoInput').value.trim();
-    const match = repoInput.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+    const cleanRepo = repoInput.replace(/^https?:\/\/github\.com\//, '');
+    const match = cleanRepo.match(/^([^\/]+)\/([^\/]+)/);
     if (!match) {
-      alert('Please enter a valid format: github.com/owner/repository');
+      alert('Please enter a valid format: owner/repository (e.g. facebook/react)');
       return;
     }
     const [, owner, repo] = match;
@@ -87,7 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('No open issues found in this repository.');
         return;
       }
-      const titles = issues.map(i => `#${i.number}: ${i.title}`);
+      const titles = issues.filter(i => !i.pull_request).map(i => `#${i.number}: ${i.title}`);
       textarea.value = titles.join('\n');
       renderPreview(parseLines(textarea.value));
       showToast('✓ Imported ' + titles.length + ' GitHub issues');
@@ -102,15 +165,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     const toSave = {
       tasks: parsedTasks.length > 0 ? parsedTasks : FocusStorage.DEFAULTS.tasks,
       sites: {
-        youtube: optYT.checked,
-        instagram: optIG.checked,
-        tiktok: optTT.checked
+        youtube: {
+          enabled: optYT.checked,
+          feed: optYTFeed.checked,
+          shorts: optYTShorts.checked,
+          recommendations: optYTRecs.checked
+        },
+        instagram: {
+          enabled: optIG.checked,
+          feed: optIGFeed.checked,
+          reels: optIGReels.checked,
+          explore: optIGExplore.checked
+        },
+        tiktok: {
+          enabled: optTT.checked,
+          fyp: optTTFyp.checked,
+          following: optTTFollowing.checked,
+          live: optTTLive.checked
+        }
       },
       intensity: intHard.checked ? 'hard' : 'soft',
       schedule: {
         enabled: optSchedEnable.checked,
         startHour: parseInt(schedStart.value, 10) || 9,
-        endHour: parseInt(schedEnd.value, 10) || 22
+        endHour: parseInt(schedEnd.value, 10) || 18
       },
       theme: selectedTheme
     };
@@ -118,6 +196,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     await FocusStorage.set(toSave);
     showToast('✓ Preferences saved');
   });
+
+  function showToast(msg) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2400);
+  }
 });
 
 function parseLines(rawText) {
@@ -148,35 +233,30 @@ function parseLines(rawText) {
       }
       return {
         id: 'task_' + idx + '_' + Date.now().toString(36),
-        title: line.replace(/^[-*•]\s*/, ''),
-        starred: line.startsWith('*') || line.startsWith('⭐'),
+        title: line,
+        starred: false,
         type: 'task'
       };
     });
 }
 
-function renderPreview(taskList) {
-  const preview = document.getElementById('taskPreviewContainer');
-  if (!preview) return;
-  if (taskList.length === 0) {
-    preview.innerHTML = '<span class="empty-hint">No tasks parsed yet. Paste some above!</span>';
+function renderPreview(tasks) {
+  const container = document.getElementById('taskPreviewContainer');
+  if (!container) return;
+  if (!tasks || tasks.length === 0) {
+    container.innerHTML = '<span class="empty-hint">No tasks yet. Add a few above to preview your focus card.</span>';
     return;
   }
-  preview.innerHTML = taskList.map(t => `
-    <div class="preview-item">
-      <span>${t.starred ? '⭐ ' : '• '}</span>
-      <span>${escapeHtml(t.title)}</span>
+  container.innerHTML = tasks.map(t => `
+    <div class="preview-item ${t.starred ? 'starred' : ''}">
+      <div class="preview-bullet"></div>
+      <span>${escapeHTML(t.title)}</span>
     </div>
   `).join('');
 }
 
-function escapeHtml(str) {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-function showToast(msg = '✓ Preferences saved') {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2200);
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }

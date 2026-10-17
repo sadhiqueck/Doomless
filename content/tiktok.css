@@ -1,11 +1,22 @@
-/* TikTok Feed Hider — Scoped to html.focus-blocked-tiktok */
-html.focus-blocked-tiktok [data-e2e="recommend-list-item-container"],
-html.focus-blocked-tiktok div[class*="DivItemContainerForSearch"],
-html.focus-blocked-tiktok [data-e2e="follow-item-container"],
-html.focus-blocked-tiktok div[class*="DivVideoFeedV2"],
-html.focus-blocked-tiktok [data-e2e="live-container"],
-html.focus-blocked-tiktok [data-e2e="live-tab-active"],
-html.focus-blocked-tiktok div[class*="DivFeedContainer"],
-html.focus-blocked-tiktok [data-e2e="main-content-others-hasrepost"] {
+/* TikTok Granular For You, Following, and Live Hider */
+
+/* 1. For You Feed */
+html.focus-block-tt-fyp [data-e2e="recommend-list-item-container"],
+html.focus-block-tt-fyp div[class*="DivItemContainerForSearch"],
+html.focus-block-tt-fyp div[class*="DivVideoFeedV2"],
+html.focus-block-tt-fyp [data-e2e="main-content-others-hasrepost"] {
+  display: none !important;
+}
+
+/* 2. Following Feed */
+html.focus-block-tt-following [data-e2e="follow-item-container"],
+html.focus-block-tt-following a[data-e2e="nav-following"] {
+  display: none !important;
+}
+
+/* 3. LIVE Tab */
+html.focus-block-tt-live [data-e2e="live-container"],
+html.focus-block-tt-live [data-e2e="live-tab-active"],
+html.focus-block-tt-live a[data-e2e="nav-live"] {
   display: none !important;
 }

@@ -11,17 +11,22 @@
 
     const shouldBlock = isEnabled && schedOk && !isCooldown;
 
-    if (shouldBlock) {
-      document.documentElement.classList.add('focus-blocked-instagram');
+    const blockFeed = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'feed'));
+    const blockReels = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'reels'));
+    const blockExplore = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'explore'));
+
+    document.documentElement.classList.toggle('focus-block-ig-feed', blockFeed);
+    document.documentElement.classList.toggle('focus-block-ig-reels', blockReels);
+    document.documentElement.classList.toggle('focus-block-ig-explore', blockExplore);
+
+    const isHome = location.pathname === '/' || location.pathname === '';
+    const isReels = location.pathname.startsWith('/reels');
+    const isExplore = location.pathname.startsWith('/explore');
+
+    if (shouldBlock && (isHome && blockFeed || isReels && blockReels || isExplore && blockExplore)) {
       pauseFeedVideos();
-      const isHome = location.pathname === '/' || location.pathname === '';
-      if (isHome) {
-        FocusCard.mount(SITE);
-      } else {
-        FocusCard.unmount();
-      }
+      FocusCard.mount(SITE);
     } else {
-      document.documentElement.classList.remove('focus-blocked-instagram');
       FocusCard.unmount();
     }
   }

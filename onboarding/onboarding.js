@@ -1,4 +1,4 @@
-// Focus Extension — Onboarding Controller
+// Focus Extension — Onboarding Controller (Cal.com Light Minimalist)
 document.addEventListener('DOMContentLoaded', () => {
   let chosenIntensity = 'soft';
 
@@ -55,7 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const updates = {
-      sites: { youtube: yt, instagram: ig, tiktok: tt },
+      sites: {
+        youtube: { enabled: yt, feed: true, shorts: true, recommendations: true },
+        instagram: { enabled: ig, feed: true, reels: true, explore: true },
+        tiktok: { enabled: tt, fyp: true, following: true, live: true }
+      },
       intensity: chosenIntensity,
       onboardingDone: true
     };

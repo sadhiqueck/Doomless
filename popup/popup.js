@@ -1,22 +1,77 @@
-// Focus Extension — Popup Controller
+// Focus Extension — Popup Controller (Cal.com Light Minimalist)
 document.addEventListener('DOMContentLoaded', async () => {
   const masterToggle = document.getElementById('masterToggle');
+
+  // Platform master switches
   const siteYT = document.getElementById('siteYT');
   const siteIG = document.getElementById('siteIG');
   const siteTT = document.getElementById('siteTT');
+
+  // Sub-option groups
+  const ytSubOptions = document.getElementById('ytSubOptions');
+  const igSubOptions = document.getElementById('igSubOptions');
+  const ttSubOptions = document.getElementById('ttSubOptions');
+
+  // Granular feature toggles
+  const ytOptFeed = document.getElementById('ytOptFeed');
+  const ytOptShorts = document.getElementById('ytOptShorts');
+  const ytOptRecs = document.getElementById('ytOptRecs');
+
+  const igOptFeed = document.getElementById('igOptFeed');
+  const igOptReels = document.getElementById('igOptReels');
+  const igOptExplore = document.getElementById('igOptExplore');
+
+  const ttOptFyp = document.getElementById('ttOptFyp');
+  const ttOptFollowing = document.getElementById('ttOptFollowing');
+  const ttOptLive = document.getElementById('ttOptLive');
+
+  // Inputs and labels
   const quickInput = document.getElementById('popupQuickInput');
   const quickBtn = document.getElementById('btnQuickAdd');
   const countEl = document.getElementById('popupTaskCount');
   const streakEl = document.getElementById('streakBadge');
   const linkOptions = document.getElementById('linkOptions');
 
+  function updateSubOptionsVisuals() {
+    ytSubOptions.classList.toggle('is-disabled', !siteYT.checked);
+    igSubOptions.classList.toggle('is-disabled', !siteIG.checked);
+    ttSubOptions.classList.toggle('is-disabled', !siteTT.checked);
+  }
+
   async function refresh() {
     const data = await FocusStorage.get();
     masterToggle.checked = data.enabled !== false;
-    siteYT.checked = data.sites?.youtube !== false;
-    siteIG.checked = data.sites?.instagram !== false;
-    siteTT.checked = data.sites?.tiktok !== false;
 
+    // YouTube
+    const yt = typeof data.sites?.youtube === 'object'
+      ? data.sites.youtube
+      : { enabled: data.sites?.youtube !== false, feed: true, shorts: true, recommendations: true };
+    siteYT.checked = yt.enabled !== false;
+    ytOptFeed.checked = yt.feed !== false;
+    ytOptShorts.checked = yt.shorts !== false;
+    ytOptRecs.checked = yt.recommendations !== false;
+
+    // Instagram
+    const ig = typeof data.sites?.instagram === 'object'
+      ? data.sites.instagram
+      : { enabled: data.sites?.instagram !== false, feed: true, reels: true, explore: true };
+    siteIG.checked = ig.enabled !== false;
+    igOptFeed.checked = ig.feed !== false;
+    igOptReels.checked = ig.reels !== false;
+    igOptExplore.checked = ig.explore !== false;
+
+    // TikTok
+    const tt = typeof data.sites?.tiktok === 'object'
+      ? data.sites.tiktok
+      : { enabled: data.sites?.tiktok !== false, fyp: true, following: true, live: true };
+    siteTT.checked = tt.enabled !== false;
+    ttOptFyp.checked = tt.fyp !== false;
+    ttOptFollowing.checked = tt.following !== false;
+    ttOptLive.checked = tt.live !== false;
+
+    updateSubOptionsVisuals();
+
+    // Stats
     const tasks = data.tasks || FocusStorage.DEFAULTS.tasks;
     const completed = data.tasksCompleted || [];
     const activeCount = tasks.filter(t => !completed.includes(t.id)).length;
@@ -26,24 +81,52 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await refresh();
 
-  // Save changes on toggle click
+  // Save changes on master toggle
   masterToggle.addEventListener('change', async () => {
     await FocusStorage.set({ enabled: masterToggle.checked });
   });
 
-  async function updateSites() {
-    const data = await FocusStorage.get();
+  // Save changes on site and sub-options
+  async function saveSitesFromUI() {
+    updateSubOptionsVisuals();
     const sites = {
-      youtube: siteYT.checked,
-      instagram: siteIG.checked,
-      tiktok: siteTT.checked
+      youtube: {
+        enabled: siteYT.checked,
+        feed: ytOptFeed.checked,
+        shorts: ytOptShorts.checked,
+        recommendations: ytOptRecs.checked
+      },
+      instagram: {
+        enabled: siteIG.checked,
+        feed: igOptFeed.checked,
+        reels: igOptReels.checked,
+        explore: igOptExplore.checked
+      },
+      tiktok: {
+        enabled: siteTT.checked,
+        fyp: ttOptFyp.checked,
+        following: ttOptFollowing.checked,
+        live: ttOptLive.checked
+      }
     };
     await FocusStorage.set({ sites });
   }
 
-  siteYT.addEventListener('change', updateSites);
-  siteIG.addEventListener('change', updateSites);
-  siteTT.addEventListener('change', updateSites);
+  // Bind site toggles
+  siteYT.addEventListener('change', saveSitesFromUI);
+  ytOptFeed.addEventListener('change', saveSitesFromUI);
+  ytOptShorts.addEventListener('change', saveSitesFromUI);
+  ytOptRecs.addEventListener('change', saveSitesFromUI);
+
+  siteIG.addEventListener('change', saveSitesFromUI);
+  igOptFeed.addEventListener('change', saveSitesFromUI);
+  igOptReels.addEventListener('change', saveSitesFromUI);
+  igOptExplore.addEventListener('change', saveSitesFromUI);
+
+  siteTT.addEventListener('change', saveSitesFromUI);
+  ttOptFyp.addEventListener('change', saveSitesFromUI);
+  ttOptFollowing.addEventListener('change', saveSitesFromUI);
+  ttOptLive.addEventListener('change', saveSitesFromUI);
 
   // Quick add task
   async function handleQuickAdd() {

@@ -2,7 +2,26 @@
 const FocusStorage = (() => {
   const DEFAULTS = {
     enabled: true,
-    sites: { youtube: true, instagram: true, tiktok: true },
+    sites: {
+      youtube: {
+        enabled: true,
+        feed: true,
+        shorts: true,
+        recommendations: true
+      },
+      instagram: {
+        enabled: true,
+        feed: true,
+        reels: true,
+        explore: true
+      },
+      tiktok: {
+        enabled: true,
+        fyp: true,
+        following: true,
+        live: true
+      }
+    },
     tasks: [
       { id: 'task-1', title: 'Finish sprint priority deliverable', starred: true, type: 'task' },
       { id: 'task-2', title: 'Review open pull request / ticket', starred: false, type: 'task' },
@@ -11,7 +30,7 @@ const FocusStorage = (() => {
     tasksCompleted: [],
     cooldownUntil: null,
     lastResetDate: new Date().toISOString().slice(0, 10),
-    theme: 'yellow',
+    theme: 'minimal-light',
     intensity: 'soft',
     schedule: { enabled: false, startHour: 9, endHour: 22 },
     weekdayMode: 'all',
@@ -22,7 +41,29 @@ const FocusStorage = (() => {
   async function get(keys = null) {
     return new Promise(resolve => {
       chrome.storage.local.get(null, stored => {
-        const result = { ...DEFAULTS, ...stored };
+        // Deep merge sites object so granular flags are preserved
+        const mergedSites = {
+          youtube: { ...DEFAULTS.sites.youtube },
+          instagram: { ...DEFAULTS.sites.instagram },
+          tiktok: { ...DEFAULTS.sites.tiktok }
+        };
+
+        if (stored.sites) {
+          ['youtube', 'instagram', 'tiktok'].forEach(site => {
+            if (typeof stored.sites[site] === 'boolean') {
+              mergedSites[site].enabled = stored.sites[site];
+            } else if (typeof stored.sites[site] === 'object' && stored.sites[site] !== null) {
+              mergedSites[site] = { ...mergedSites[site], ...stored.sites[site] };
+            }
+          });
+        }
+
+        const result = {
+          ...DEFAULTS,
+          ...stored,
+          sites: mergedSites
+        };
+
         if (keys && typeof keys === 'string') {
           resolve(result[keys]);
         } else if (Array.isArray(keys)) {
@@ -45,8 +86,22 @@ const FocusStorage = (() => {
   async function isSiteEnabled(siteName) {
     const data = await get();
     if (data.enabled === false) return false;
-    if (data.sites && data.sites[siteName] === false) return false;
+    const siteConfig = data.sites?.[siteName];
+    if (typeof siteConfig === 'boolean') return siteConfig;
+    if (typeof siteConfig === 'object' && siteConfig !== null) {
+      return siteConfig.enabled !== false;
+    }
     return true;
+  }
+
+  async function isFeatureBlocked(siteName, featureName) {
+    const data = await get();
+    if (data.enabled === false) return false;
+    const siteConfig = data.sites?.[siteName];
+    if (!siteConfig) return false;
+    if (typeof siteConfig === 'boolean') return siteConfig;
+    if (siteConfig.enabled === false) return false;
+    return siteConfig[featureName] !== false;
   }
 
   async function isCooldownActive() {
@@ -118,6 +173,7 @@ const FocusStorage = (() => {
     get,
     set,
     isSiteEnabled,
+    isFeatureBlocked,
     isCooldownActive,
     setCooldown,
     isScheduleActive,

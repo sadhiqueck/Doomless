@@ -11,12 +11,22 @@
 
     const shouldBlock = isEnabled && schedOk && !isCooldown;
 
-    if (shouldBlock) {
-      document.documentElement.classList.add('focus-blocked-tiktok');
+    const blockFyp = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'fyp'));
+    const blockFollowing = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'following'));
+    const blockLive = shouldBlock && (await FocusStorage.isFeatureBlocked(SITE, 'live'));
+
+    document.documentElement.classList.toggle('focus-block-tt-fyp', blockFyp);
+    document.documentElement.classList.toggle('focus-block-tt-following', blockFollowing);
+    document.documentElement.classList.toggle('focus-block-tt-live', blockLive);
+
+    const isHome = location.pathname === '/' || location.pathname === '';
+    const isFollowing = location.pathname.startsWith('/following');
+    const isLive = location.pathname.startsWith('/live');
+
+    if (shouldBlock && (isHome && blockFyp || isFollowing && blockFollowing || isLive && blockLive)) {
       pauseTtVideos();
       FocusCard.mount(SITE);
     } else {
-      document.documentElement.classList.remove('focus-blocked-tiktok');
       FocusCard.unmount();
     }
   }

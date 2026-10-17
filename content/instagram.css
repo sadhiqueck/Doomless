@@ -1,13 +1,24 @@
-/* Instagram Feed Hider — Scoped to html.focus-blocked-instagram */
-html.focus-blocked-instagram main[role="main"] article,
-html.focus-blocked-instagram [data-testid="virtual-list-scroll-crumb"],
-html.focus-blocked-instagram main[role="main"] ._ac7v,
-html.focus-blocked-instagram main[role="main"] [style*="padding-bottom: 100%"],
-html.focus-blocked-instagram main[role="main"] ._aagv,
-html.focus-blocked-instagram main[role="main"] ._aabd,
-html.focus-blocked-instagram [data-testid="suggested-posts"],
-html.focus-blocked-instagram ._aa4b,
-html.focus-blocked-instagram [data-testid="feed-loading-skeleton"] {
+/* Instagram Granular Feed, Reels, and Explore Hider */
+
+/* 1. Primary Home Feed */
+html.focus-block-ig-feed main[role="main"] article,
+html.focus-block-ig-feed [data-testid="virtual-list-scroll-crumb"],
+html.focus-block-ig-feed [data-testid="suggested-posts"],
+html.focus-block-ig-feed ._aa4b,
+html.focus-block-ig-feed [data-testid="feed-loading-skeleton"] {
+  display: none !important;
+}
+
+/* 2. Instagram Reels */
+html.focus-block-ig-reels main[role="main"] ._ac7v,
+html.focus-block-ig-reels a[href*="/reels/"],
+html.focus-block-ig-reels main[role="main"] [style*="padding-bottom: 100%"] {
+  display: none !important;
+}
+
+/* 3. Explore Grid */
+html.focus-block-ig-explore main[role="main"] ._aagv,
+html.focus-block-ig-explore main[role="main"] ._aabd {
   display: none !important;
 }
 
@@ -16,5 +27,5 @@ html.focus-blocked-instagram [data-testid="feed-loading-skeleton"] {
   align-items: center;
   justify-content: center;
   min-height: 60vh;
-  background: #000000;
+  background: #ffffff;
 }
