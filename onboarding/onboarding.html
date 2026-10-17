@@ -9,10 +9,10 @@
 <body>
   <div class="onboarding-shell">
     <div class="step-progress" id="stepProgress">
-      <span class="dot active"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
+      <span class="dot active" id="dot1"></span>
+      <span class="dot" id="dot2"></span>
+      <span class="dot" id="dot3"></span>
+      <span class="dot" id="dot4"></span>
     </div>
 
     <!-- Step 1: Value Prop -->
@@ -20,7 +20,7 @@
       <span class="step-emoji">📌</span>
       <h1 class="step-heading">Block the scroll.<br>Swap in your work.</h1>
       <p class="step-sub">Most blockers leave you staring at a blank screen. Focus Extension replaces mindless feeds on YouTube, Instagram, and TikTok with a 30-second swipeable unit of what you're working on today.</p>
-      <button class="btn-next" onclick="nextStep(2)">Get Started →</button>
+      <button class="btn-next" id="btnStep1Next">Get Started →</button>
     </div>
 
     <!-- Step 2: Site Selection -->
@@ -42,8 +42,8 @@
         </label>
       </div>
       <div class="btn-group">
-        <button class="btn-back" onclick="nextStep(1)">Back</button>
-        <button class="btn-next" onclick="nextStep(3)">Continue →</button>
+        <button class="btn-back" id="btnStep2Back">Back</button>
+        <button class="btn-next" id="btnStep2Next">Continue →</button>
       </div>
     </div>
 
@@ -53,8 +53,8 @@
       <p class="step-sub">Paste your sprint tickets, chapter goals, or 3 key priorities:</p>
       <textarea id="obTasks" placeholder="Complete section 4.2 draft&#10;Fix authentication redirect bug&#10;Reply to design review thread"></textarea>
       <div class="btn-group">
-        <button class="btn-back" onclick="nextStep(2)">Back</button>
-        <button class="btn-next" onclick="nextStep(4)">Continue →</button>
+        <button class="btn-back" id="btnStep3Back">Back</button>
+        <button class="btn-next" id="btnStep3Next">Continue →</button>
       </div>
     </div>
 
@@ -62,18 +62,18 @@
     <div class="step-card" id="step4">
       <h2 class="step-heading">Choose your intensity</h2>
       <div class="intensity-options">
-        <label class="intensity-card selected" id="optSoft" onclick="selectIntensity('soft')">
+        <div class="intensity-card selected" id="optSoft">
           <strong>Soft Nudge</strong>
           <span>Shows your task note first, but offers a 5-minute unlock if you need a breather.</span>
-        </label>
-        <label class="intensity-card" id="optHard" onclick="selectIntensity('hard')">
+        </div>
+        <div class="intensity-card" id="optHard">
           <strong>Hard Block</strong>
           <span>No bypass buttons. Fully holds the boundary during work hours.</span>
-        </label>
+        </div>
       </div>
       <div class="btn-group">
-        <button class="btn-back" onclick="nextStep(3)">Back</button>
-        <button class="btn-next finish" onclick="finishOnboarding()">Start Focusing 🚀</button>
+        <button class="btn-back" id="btnStep4Back">Back</button>
+        <button class="btn-next finish" id="btnStep4Finish">Start Focusing 🚀</button>
       </div>
     </div>
   </div>

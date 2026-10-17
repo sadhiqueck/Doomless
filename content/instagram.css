@@ -1,24 +1,13 @@
-/* Instagram Feed Hider */
-main[role="main"] article,
-[data-testid="virtual-list-scroll-crumb"] {
-  display: none !important;
-}
-
-/* Reels tab elements */
-main[role="main"] ._ac7v,
-main[role="main"] [style*="padding-bottom: 100%"] {
-  display: none !important;
-}
-
-/* Explore grid */
-main[role="main"] ._aagv,
-main[role="main"] ._aabd {
-  display: none !important;
-}
-
-/* Suggested posts & sidebar */
-[data-testid="suggested-posts"],
-._aa4b {
+/* Instagram Feed Hider — Scoped to html.focus-blocked-instagram */
+html.focus-blocked-instagram main[role="main"] article,
+html.focus-blocked-instagram [data-testid="virtual-list-scroll-crumb"],
+html.focus-blocked-instagram main[role="main"] ._ac7v,
+html.focus-blocked-instagram main[role="main"] [style*="padding-bottom: 100%"],
+html.focus-blocked-instagram main[role="main"] ._aagv,
+html.focus-blocked-instagram main[role="main"] ._aabd,
+html.focus-blocked-instagram [data-testid="suggested-posts"],
+html.focus-blocked-instagram ._aa4b,
+html.focus-blocked-instagram [data-testid="feed-loading-skeleton"] {
   display: none !important;
 }
 

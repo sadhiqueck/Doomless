@@ -1,39 +1,61 @@
 // Focus Extension — Instagram Content Script
-(async () => {
-  const isEnabled = await FocusStorage.isSiteEnabled('instagram');
-  if (!isEnabled) return;
-  console.log('[Focus Extension] Initializing Instagram blocker...');
-})();
+(function() {
+  const SITE = 'instagram';
 
-let lastPath = location.pathname;
-const igObserver = new MutationObserver(() => {
-  if (location.pathname !== lastPath) {
-    lastPath = location.pathname;
-    console.log('[Focus Extension] Instagram path change:', lastPath);
+  async function updateState() {
+    if (location.pathname === '/accounts/login/') return;
+
+    const isEnabled = await FocusStorage.isSiteEnabled(SITE);
+    const schedOk = await FocusStorage.isScheduleActive();
+    const isCooldown = await FocusStorage.isCooldownActive();
+
+    const shouldBlock = isEnabled && schedOk && !isCooldown;
+
+    if (shouldBlock) {
+      document.documentElement.classList.add('focus-blocked-instagram');
+      pauseFeedVideos();
+      const isHome = location.pathname === '/' || location.pathname === '';
+      if (isHome) {
+        FocusCard.mount(SITE);
+      } else {
+        FocusCard.unmount();
+      }
+    } else {
+      document.documentElement.classList.remove('focus-blocked-instagram');
+      FocusCard.unmount();
+    }
   }
-});
-igObserver.observe(document.body, { childList: true, subtree: true });
 
-function pauseFeedVideos() {
-  document.querySelectorAll('video').forEach(v => {
-    // Keep Stories dialog active
-    if (!v.closest('[role="dialog"]') && !v.closest('[role="presentation"]')) {
-      try { v.pause(); } catch(e) {}
+  function pauseFeedVideos() {
+    document.querySelectorAll('video').forEach(v => {
+      if (!v.closest('[role="dialog"]') && !v.closest('[role="presentation"]')) {
+        try { v.pause(); } catch(e) {}
+      }
+    });
+  }
+
+  updateState();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateState);
+  }
+
+  window.addEventListener('popstate', updateState);
+
+  let lastPath = location.pathname;
+  const observer = new MutationObserver(() => {
+    if (location.pathname !== lastPath) {
+      lastPath = location.pathname;
+      updateState();
     }
   });
-}
-window.addEventListener('load', pauseFeedVideos);
+  observer.observe(document.documentElement, { subtree: true, childList: true });
 
-if (location.pathname === '/accounts/login/') {
-  console.log('[Focus Extension] Login screen detected, skipping block.');
-}
-
-window.addEventListener('load', () => {
-  FocusCard.mount('instagram');
-});
-
-// Late-2026 selector updates
-const IG_FALLBACK_SELECTORS = [
-  '[data-testid="feed-loading-skeleton"]',
-  'div[style*="flex-direction: column"] > article'
-];
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === 'local') {
+        updateState();
+      }
+    });
+  }
+})();

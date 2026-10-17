@@ -1,22 +1,38 @@
-// Storage helper for Focus Extension
+// Focus Extension — Storage Utilities
 const FocusStorage = (() => {
   const DEFAULTS = {
     enabled: true,
     sites: { youtube: true, instagram: true, tiktok: true },
     tasks: [
-      { id: 'task-1', title: 'Complete first daily focus item', starred: true, type: 'task' },
-      { id: 'task-2', title: 'Review sprint backlog', starred: false, type: 'task' }
+      { id: 'task-1', title: 'Finish sprint priority deliverable', starred: true, type: 'task' },
+      { id: 'task-2', title: 'Review open pull request / ticket', starred: false, type: 'task' },
+      { id: 'task-3', title: '30-second breathing & reset', starred: false, type: 'note' }
     ],
     tasksCompleted: [],
     cooldownUntil: null,
     lastResetDate: new Date().toISOString().slice(0, 10),
     theme: 'yellow',
-    intensity: 'soft'
+    intensity: 'soft',
+    schedule: { enabled: false, startHour: 9, endHour: 22 },
+    weekdayMode: 'all',
+    streak: 0,
+    onboardingDone: false
   };
 
   async function get(keys = null) {
     return new Promise(resolve => {
-      chrome.storage.local.get(keys || DEFAULTS, resolve);
+      chrome.storage.local.get(null, stored => {
+        const result = { ...DEFAULTS, ...stored };
+        if (keys && typeof keys === 'string') {
+          resolve(result[keys]);
+        } else if (Array.isArray(keys)) {
+          const subset = {};
+          keys.forEach(k => { subset[k] = result[k]; });
+          resolve(subset);
+        } else {
+          resolve(result);
+        }
+      });
     });
   }
 
@@ -26,133 +42,91 @@ const FocusStorage = (() => {
     });
   }
 
-  return { get, set };
-})();
-
-FocusStorage.isSiteEnabled = async function(siteName) {
-  const data = await FocusStorage.get();
-  return data.enabled && (data.sites && data.sites[siteName] !== false);
-};
-
-FocusStorage.setCooldown = async function(minutes = 5) {
-  const expiresAt = Date.now() + (minutes * 60 * 1000);
-  await FocusStorage.set({ cooldownUntil: expiresAt });
-};
-
-FocusStorage.isCooldownActive = async function() {
-  const data = await FocusStorage.get();
-  return Boolean(data.cooldownUntil && Date.now() < data.cooldownUntil);
-};
-
-FocusStorage.seedDefaultTasks = async function() {
-  const data = await FocusStorage.get();
-  if (!data.tasks || data.tasks.length === 0) {
-    await FocusStorage.set({
-      tasks: [
-        { id: 'seed-1', title: 'Write 3 key points for today's goal', starred: true, type: 'task' },
-        { id: 'seed-2', title: 'Review open pull request / ticket', starred: false, type: 'task' },
-        { id: 'seed-3', title: 'Take 5 deep breaths before scrolling', starred: false, type: 'note' }
-      ]
-    });
+  async function isSiteEnabled(siteName) {
+    const data = await get();
+    if (data.enabled === false) return false;
+    if (data.sites && data.sites[siteName] === false) return false;
+    return true;
   }
-};
 
-FocusStorage.addTask = async function(title, opts = {}) {
-  const data = await FocusStorage.get();
-  const tasks = data.tasks || [];
-  const newTask = {
-    id: 'task_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-    title: title.trim(),
-    starred: Boolean(opts.starred),
-    type: opts.type || 'task'
-  };
-  await FocusStorage.set({ tasks: [...tasks, newTask] });
-  return newTask;
-};
-
-FocusStorage.removeTask = async function(taskId) {
-  const data = await FocusStorage.get();
-  const tasks = (data.tasks || []).filter(t => t.id !== taskId);
-  const tasksCompleted = (data.tasksCompleted || []).filter(id => id !== taskId);
-  await FocusStorage.set({ tasks, tasksCompleted });
-};
-
-FocusStorage.updateTask = async function(taskId, changes) {
-  const data = await FocusStorage.get();
-  const tasks = (data.tasks || []).map(t => t.id === taskId ? { ...t, ...changes } : t);
-  await FocusStorage.set({ tasks });
-};
-
-FocusStorage.checkDailyRollover = async function() {
-  const data = await FocusStorage.get();
-  const today = new Date().toISOString().slice(0, 10);
-  if (data.lastResetDate !== today) {
-    await FocusStorage.set({
-      tasksCompleted: [],
-      lastResetDate: today
-    });
+  async function isCooldownActive() {
+    const data = await get();
+    return Boolean(data.cooldownUntil && Date.now() < data.cooldownUntil);
   }
-};
 
-// Intensity mode: 'soft' gives option to bypass; 'hard' blocks bypass
-FocusStorage.getIntensity = async function() {
-  const data = await FocusStorage.get();
-  return data.intensity || 'soft';
-};
+  async function setCooldown(minutes = 5) {
+    const expiresAt = Date.now() + (minutes * 60 * 1000);
+    await set({ cooldownUntil: expiresAt });
+  }
 
-FocusStorage.getSchedule = async function() {
-  const data = await FocusStorage.get();
-  return data.schedule || { enabled: false, startHour: 9, endHour: 22 };
-};
+  async function isScheduleActive() {
+    const data = await get();
+    const sched = data.schedule || { enabled: false, startHour: 9, endHour: 22 };
+    if (!sched.enabled) return true;
+    const currentHour = new Date().getHours();
+    return currentHour >= sched.startHour && currentHour < sched.endHour;
+  }
 
-FocusStorage.isScheduleActive = async function() {
-  const sched = await FocusStorage.getSchedule();
-  if (!sched.enabled) return true;
-  const currentHour = new Date().getHours();
-  return currentHour >= sched.startHour && currentHour < sched.endHour;
-};
+  async function getTasks() {
+    const data = await get();
+    return (data.tasks && data.tasks.length > 0) ? data.tasks : DEFAULTS.tasks;
+  }
 
-// Broadcast storage changes for live content updates
-if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
-  chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local') {
-      window.dispatchEvent(new CustomEvent('focus-storage-updated', { detail: changes }));
+  async function addTask(title, opts = {}) {
+    const data = await get();
+    const tasks = (data.tasks && data.tasks.length > 0) ? data.tasks : DEFAULTS.tasks;
+    const newTask = {
+      id: 'task_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      title: title.trim(),
+      starred: Boolean(opts.starred),
+      type: opts.type || 'task'
+    };
+    await set({ tasks: [...tasks, newTask] });
+    return newTask;
+  }
+
+  async function removeTask(taskId) {
+    const data = await get();
+    const tasks = (data.tasks || []).filter(t => t.id !== taskId);
+    const tasksCompleted = (data.tasksCompleted || []).filter(id => id !== taskId);
+    await set({ tasks, tasksCompleted });
+  }
+
+  async function updateTask(taskId, changes) {
+    const data = await get();
+    const tasks = (data.tasks || []).map(t => t.id === taskId ? { ...t, ...changes } : t);
+    await set({ tasks });
+  }
+
+  async function markTaskDone(taskId, isDone = true) {
+    const data = await get();
+    let tasksCompleted = [...(data.tasksCompleted || [])];
+    if (isDone) {
+      if (!tasksCompleted.includes(taskId)) tasksCompleted.push(taskId);
+    } else {
+      tasksCompleted = tasksCompleted.filter(id => id !== taskId);
     }
-  });
-}
-
-FocusStorage.setSiteSchedule = async function(siteName, scheduleObj) {
-  const data = await FocusStorage.get();
-  const siteSchedules = data.siteSchedules || {};
-  siteSchedules[siteName] = scheduleObj;
-  await FocusStorage.set({ siteSchedules });
-};
-
-FocusStorage.isHourInRange = function(startHour, endHour) {
-  const currentHour = new Date().getHours();
-  if (startHour <= endHour) {
-    return currentHour >= startHour && currentHour < endHour;
+    await set({ tasksCompleted });
   }
-  // Overnight schedule support (e.g. 22:00 to 06:00)
-  return currentHour >= startHour || currentHour < endHour;
-};
 
-// Standardized schedule format
-FocusStorage.DEFAULT_SCHEDULE = {
-  enabled: false,
-  startHour: 9,
-  endHour: 22,
-  mode: 'all' // 'all', 'workdays', 'weekends'
-};
+  async function getIntensity() {
+    const data = await get();
+    return data.intensity || 'soft';
+  }
 
-FocusStorage.isDayMatchingMode = function(mode = 'all') {
-  const day = new Date().getDay(); // 0 is Sunday, 6 is Saturday
-  if (mode === 'workdays') return day >= 1 && day <= 5;
-  if (mode === 'weekends') return day === 0 || day === 6;
-  return true;
-};
-
-// Guard Sunday midnight edge-case in streak calculation
-FocusStorage.isSunday = function() {
-  return new Date().getDay() === 0;
-};
+  return {
+    get,
+    set,
+    isSiteEnabled,
+    isCooldownActive,
+    setCooldown,
+    isScheduleActive,
+    getTasks,
+    addTask,
+    removeTask,
+    updateTask,
+    markTaskDone,
+    getIntensity,
+    DEFAULTS
+  };
+})();

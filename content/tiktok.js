@@ -1,33 +1,54 @@
 // Focus Extension — TikTok Content Script
-(async () => {
-  const isEnabled = await FocusStorage.isSiteEnabled('tiktok');
-  if (!isEnabled) return;
-  console.log('[Focus Extension] Initializing TikTok blocker...');
-})();
+(function() {
+  const SITE = 'tiktok';
 
-let lastTtPath = location.pathname;
-const ttObserver = new MutationObserver(() => {
-  if (location.pathname !== lastTtPath) {
-    lastTtPath = location.pathname;
-    pauseTtVideos();
+  async function updateState() {
+    if (location.pathname.startsWith('/login')) return;
+
+    const isEnabled = await FocusStorage.isSiteEnabled(SITE);
+    const schedOk = await FocusStorage.isScheduleActive();
+    const isCooldown = await FocusStorage.isCooldownActive();
+
+    const shouldBlock = isEnabled && schedOk && !isCooldown;
+
+    if (shouldBlock) {
+      document.documentElement.classList.add('focus-blocked-tiktok');
+      pauseTtVideos();
+      FocusCard.mount(SITE);
+    } else {
+      document.documentElement.classList.remove('focus-blocked-tiktok');
+      FocusCard.unmount();
+    }
   }
-});
-ttObserver.observe(document.body, { childList: true, subtree: true });
 
-function pauseTtVideos() {
-  document.querySelectorAll('video').forEach(v => {
-    try { v.pause(); } catch(e) {}
+  function pauseTtVideos() {
+    document.querySelectorAll('video').forEach(v => {
+      try { v.pause(); } catch(e) {}
+    });
+  }
+
+  updateState();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateState);
+  }
+
+  window.addEventListener('popstate', updateState);
+
+  let lastPath = location.pathname;
+  const observer = new MutationObserver(() => {
+    if (location.pathname !== lastPath) {
+      lastPath = location.pathname;
+      updateState();
+    }
   });
-}
-document.addEventListener('DOMContentLoaded', pauseTtVideos);
+  observer.observe(document.documentElement, { subtree: true, childList: true });
 
-if (location.pathname.startsWith('/login')) {
-  console.log('[Focus Extension] TikTok login view active.');
-}
-
-window.addEventListener('load', () => {
-  FocusCard.mount('tiktok');
-});
-
-// Late-2026 client-side route pattern
-const TT_REPOST_CONTAINER = '[data-e2e="main-content-others-hasrepost"]';
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === 'local') {
+        updateState();
+      }
+    });
+  }
+})();

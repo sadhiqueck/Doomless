@@ -1,20 +1,11 @@
-/* TikTok Feed Hider */
-[data-e2e="recommend-list-item-container"],
-div[class*="DivItemContainerForSearch"] {
-  display: none !important;
-}
-
-[data-e2e="follow-item-container"],
-div[class*="DivVideoFeedV2"] {
-  display: none !important;
-}
-
-[data-e2e="live-container"],
-[data-e2e="live-tab-active"] {
-  display: none !important;
-}
-
-/* Strict cascade enforcement */
-div[class*="DivFeedContainer"] {
+/* TikTok Feed Hider — Scoped to html.focus-blocked-tiktok */
+html.focus-blocked-tiktok [data-e2e="recommend-list-item-container"],
+html.focus-blocked-tiktok div[class*="DivItemContainerForSearch"],
+html.focus-blocked-tiktok [data-e2e="follow-item-container"],
+html.focus-blocked-tiktok div[class*="DivVideoFeedV2"],
+html.focus-blocked-tiktok [data-e2e="live-container"],
+html.focus-blocked-tiktok [data-e2e="live-tab-active"],
+html.focus-blocked-tiktok div[class*="DivFeedContainer"],
+html.focus-blocked-tiktok [data-e2e="main-content-others-hasrepost"] {
   display: none !important;
 }
